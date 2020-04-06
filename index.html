@@ -8,14 +8,31 @@
     </head>
     <body>
         <div id="app">
-            {{name}}
+            <p>{{name}} young forever</p>
+            <p class="test1" v-class="className" v-on:click="clEvent">
+                {{content}}
+            </p>
+            <p v-html="vhtml"></p>
+            <input type="text" v-model="inputModel">
         </div>
+        <script src="./js/compile.js"></script>
         <script src="./js/MVVM.js"></script>
         <script>
             var vm = new MVVM({
                 el: '#app',
                 data: {
-                    name: 'Guxianwang'
+                    name: 'Guxianwang',
+                    className: 'test22',
+                    content: '嵌套测试',
+                    inputVal: 'input',
+                    inputModel: 'inputModel',
+                    vhtml: 'vhtml'
+                },
+                methods: {
+                    clEvent: function() {
+                        alert('gxw  get this.name   ',  this.name);
+                        console.log('gxw  get this.name   ',  this.name);
+                    }
                 }
             });
 
