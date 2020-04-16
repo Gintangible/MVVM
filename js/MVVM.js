@@ -7,6 +7,7 @@ function MVVM(options) {
         this._proxy(key);
     });
 
+    observe(data);
     this.$compile = new Compile(this.$options.el || document.body, this);
 }
 
@@ -19,8 +20,7 @@ MVVM.prototype = {
             get: function proxyGetter() {
                 return this._data[key];
             },
-            set: function proxySetter(newVal, oldVal) {
-                console.log('gxw  get ', newVal, oldVal);
+            set: function proxySetter(newVal) {
                 this._data[key] = newVal;
             }
         });

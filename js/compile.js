@@ -27,7 +27,7 @@ Compile.prototype = {
     compileElement(node) {
         var childNodes = node.childNodes;
 
-        [].slice.call(childNodes).forEach(child => {
+        Array.from(childNodes).forEach(child => {
             var text = child.textContent,
                 reg = /\{\{(.*)\}\}/;
 
@@ -46,7 +46,7 @@ Compile.prototype = {
     compileDirect(node) {
         var nodeAttrs = node.attributes;
 
-        [].slice.call(nodeAttrs).forEach(attr => {
+        Array.from(nodeAttrs).forEach(attr => {
             var attrName = attr.name;
 
             if (this.isDirective(attrName)) {
@@ -98,6 +98,10 @@ var compileUtil = {
         var updateFn = updater[dir + 'Updater'];
 
         updateFn && updateFn(node, this._getVMVal(vm, exp));
+
+        new Watcher(vm, exp, function(val, oldVal) {
+            updateFn && updateFn(node, val);
+        })
     },
     eventHandler(node, vm, exp, dir) {
         var eventType = dir.split(':')[1],
