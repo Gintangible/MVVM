@@ -1,17 +1,15 @@
-function Watcher(vm, exp, cb) {
-    this.cb = cb;
-    this.vm = vm;
-    this.exp = exp;
-    this.depIds = {};
-    this.value = this.get();
-}
-
-Watcher.prototype = {
-    constructor: Watcher,
-    update: function() {
+class Watcher {
+    constructor(vm, exp, cb) {
+        this.cb = cb;
+        this.vm = vm;
+        this.exp = exp;
+        this.depIds = {};
+        this.value = this.get();
+    }
+    update() {
         this.run();
-    },
-    run: function() {
+    }
+    run() {
         var value = this.get();
         var oldValue = this.value;
 
@@ -19,20 +17,20 @@ Watcher.prototype = {
             this.value = value;
             this.cb.call(this.vm, value, oldValue);
         }
-    },
+    }
     addDep(dep) {
         if (!this.depIds.hasOwnProperty(dep.id)) {
             dep.addSub(this);
             this.depIds[dep.id] = dep;
         }
-    },
+    }
     get() {
         Dep.target = this;
         var value = this.getVMVal();
         Dep.target = null;
 
         return value;
-    },
+    }
     getVMVal() {
         var val = this.vm._data,
             expArray = this.exp.split('.');
@@ -43,4 +41,4 @@ Watcher.prototype = {
 
         return val;
     }
-};
+}

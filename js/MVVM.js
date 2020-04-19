@@ -1,19 +1,17 @@
-function MVVM(options) {
-    this.$options = options;
+class MVVM {
+    constructor(options) {
+        this.$options = options;
 
-    var data = (this._data = this.$options.data);
+        var data = (this._data = this.$options.data);
 
-    Object.keys(data).forEach(key => {
-        this._proxy(key);
-    });
+        Object.keys(data).forEach(key => {
+            this._proxy(key);
+        });
 
-    observe(data);
-    this.$compile = new Compile(this.$options.el || document.body, this);
-}
-
-MVVM.prototype = {
-    constructor: MVVM,
-    _proxy: function(key) {
+        observe(data);
+        this.$compile = new Compile(this.$options.el || document.body, this);
+    }
+    _proxy(key) {
         Object.defineProperty(this, key, {
             configurable: false,
             enumerable: true,
@@ -25,4 +23,4 @@ MVVM.prototype = {
             }
         });
     }
-};
+}

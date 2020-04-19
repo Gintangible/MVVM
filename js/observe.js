@@ -1,18 +1,16 @@
-function Observe(data) {
-    this.data = data;
-    this.walk(data);
-}
-
-Observe.prototype = {
-    constructor: Observe,
-    walk: function(data) {
+class Observe {
+    constructor(data) {
+        this.data = data;
+        this.walk(data);
+    }
+    walk(data) {
         Object.keys(data).forEach(key => {
             this.convert(key, data[key]);
         });
-    },
+    }
     convert(key, val) {
         this.defineReactive(this.data, key, val);
-    },
+    }
     defineReactive(data, key, val) {
         // 添加 dep
         var dep = new Dep();
@@ -31,7 +29,6 @@ Observe.prototype = {
             set: function(newVal) {
                 if (newVal === val) return;
 
-                
                 val = newVal;
                 observe(newVal);
                 // 通知watcher 更新数据
@@ -39,7 +36,7 @@ Observe.prototype = {
             }
         });
     }
-};
+}
 
 function observe(val) {
     if (val && !isPlainObject(val)) {
@@ -51,32 +48,29 @@ function observe(val) {
 
 var uid = 0;
 
-function Dep() {
-    this.id = uid++;
-    this.subs = [];
-}
-
-Dep.prototype = {
-    constructor: Dep,
+class Dep {
+    constructor() {
+        this.id = uid++;
+        this.subs = [];
+    }
     depend() {
-        Dep.target.addDep(this)
-    },
+        Dep.target.addDep(this);
+    }
     addSub(sub) {
         this.subs.push(sub);
-    },
-
+    }
     removeSub(sub) {
         var index = this.subs.indexOf(sub);
 
         if (index > -1) {
             this.subs.splice(index, 1);
         }
-    },
-    notify: function() {
+    }
+    notify() {
         this.subs.forEach(sub => {
             sub.update();
         });
     }
-};
+}
 
 Dep.target = null;

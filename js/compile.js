@@ -1,16 +1,14 @@
-function Compile(el, vm) {
-    this.$vm = vm;
-    this.$el = this.isElmentNode(el) ? el : document.querySelector(el);
-
-    if (this.$el) {
-        this.$fragment = this.node2fragment(this.$el);
-        this.init();
-        this.$el.appendChild(this.$fragment);
+class Compile {
+    constructor(el, vm) {
+        this.$vm = vm;
+        this.$el = isElmentNode(el) ? el : document.querySelector(el);
+    
+        if (this.$el) {
+            this.$fragment = this.node2fragment(this.$el);
+            this.init();
+            this.$el.appendChild(this.$fragment);
+        }
     }
-}
-
-Compile.prototype = {
-    constructor: Compile,
     node2fragment(el) {
         var fragment = document.createDocumentFragment(),
             child;
@@ -20,10 +18,10 @@ Compile.prototype = {
         }
 
         return fragment;
-    },
+    }
     init() {
         this.compileElement(this.$fragment);
-    },
+    }
     compileElement(node) {
         var childNodes = node.childNodes;
 
@@ -31,10 +29,10 @@ Compile.prototype = {
             var text = child.textContent,
                 reg = /\{\{(.*)\}\}/;
 
-            if (this.isElmentNode(child)) {
+            if (isElmentNode(child)) {
                 // 解析指令 v-
                 this.compileDirect(child);
-            } else if (this.isTextNode(child) && reg.test(text)) {
+            } else if (isTextNode(child) && reg.test(text)) {
                 this.compileText(node, RegExp.$1);
             }
 
@@ -42,7 +40,7 @@ Compile.prototype = {
                 this.compileElement(child);
             }
         });
-    },
+    }
     compileDirect(node) {
         var nodeAttrs = node.attributes;
 
@@ -63,23 +61,17 @@ Compile.prototype = {
                 node.removeAttribute(attrName);
             }
         });
-    },
-    compileText: function(node, reg) {
+    }
+    compileText(node, reg) {
         compileUtil.text(node, this.$vm, reg);
-    },
+    }
     isDirective(dir) {
         return dir.indexOf('v-') > -1;
-    },
+    }
     isEventDirect(dir) {
         return dir.indexOf('on:') > -1;
-    },
-    isElmentNode(node) {
-        return node.nodeType === 1;
-    },
-    isTextNode(node) {
-        return node.nodeType === 3;
     }
-};
+}
 
 var compileUtil = {
     text: function(node, vm, exp) {
