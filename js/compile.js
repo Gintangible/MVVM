@@ -2,7 +2,7 @@ class Compile {
     constructor(el, vm) {
         this.$vm = vm;
         this.$el = isElmentNode(el) ? el : document.querySelector(el);
-    
+
         if (this.$el) {
             this.$fragment = this.node2fragment(this.$el);
             this.init();
@@ -84,7 +84,19 @@ var compileUtil = {
         this.bind(node, vm, exp, 'class');
     },
     model: function(node, vm, exp) {
+        let val = this._getVMVal(vm, exp);
+
         this.bind(node, vm, exp, 'model');
+
+        node.addEventListener('input', e => {
+            var newVal = e.target.value;
+
+            if (val === newVal) {
+                return;
+            }
+
+            this._setVMVal(vm, exp, newVal);
+        });
     },
     bind: function(node, vm, exp, dir) {
         var updateFn = updater[dir + 'Updater'];
@@ -93,7 +105,7 @@ var compileUtil = {
 
         new Watcher(vm, exp, function(val, oldVal) {
             updateFn && updateFn(node, val);
-        })
+        });
     },
     eventHandler(node, vm, exp, dir) {
         var eventType = dir.split(':')[1],
@@ -105,11 +117,23 @@ var compileUtil = {
         var val = vm._data,
             expArray = exp.split('.');
 
-        expArray.forEach(e => {
-            val = val[e];
+        expArray.forEach(k => {
+            val = val[k];
         });
 
         return val;
+    },
+    _setVMVal: function(vm, exp, newVal) {
+        let val = vm._data,
+            expArray = exp.split('.');
+
+        expArray.forEach((k, i) => {
+            if (i < expArray.length - 1) {
+                val = val[k];
+            } else {
+                val[k] = newVal;
+            }
+        });
     }
 };
 
